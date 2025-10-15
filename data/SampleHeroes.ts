@@ -43,12 +43,13 @@ export const puppet: Character = {
           description:
             'When using Invisible Strings to create Assets, add a d6 and step up the effect die by one.',
         },
+      ],
+      limits: [
         {
           name: 'Fragile Control',
           description:
             'When an asset created by Invisible Strings is targeted, it is undefended unless you spend a PP.',
-        },
-      ],
+        },]
     },
   ],
   specialties: [
@@ -140,6 +141,12 @@ export const shadowStrike: Character = {
           description: 'Replace Gorilla Strength power with a 2d8 or a 3d6 on your next roll',
         },
       ],
+      limits: [
+        {
+          name: 'Difficult Recovert',
+          description: 'Add Enhanced Durability die to the opposing roll when others try to recover your physical stress'
+        }
+      ]
     },
   ],
   specialties: [

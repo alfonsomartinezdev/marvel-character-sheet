@@ -22,10 +22,16 @@ export interface SFX {
   description: string;
 }
 
+export interface Limit {
+  name: string;
+  description: string;
+}
+
 export interface PowerSet {
   name: string;
   powers: Power[];
   sfx: SFX[];
+  limits: Limit[];
 }
 
 export interface Specialty {

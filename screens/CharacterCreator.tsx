@@ -70,41 +70,107 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
   const affiliationDiceOptions: DieType[] = ["d8", "d10", "d12"];
 
   const handleSave = () => {
-    if (!name.trim()) {
-      Alert.alert("Error", "Please enter a character name");
-      return;
+  // Validate character name
+  if (!name.trim()) {
+    Alert.alert("Error", "Please enter a character name");
+    return;
+  }
+
+  // Validate power sets
+  const validatedPowerSets = powerSets.filter(ps => {
+    if (!ps.name.trim()) {
+      Alert.alert("Error", "All power sets must have a name");
+      return false;
     }
+    
+    // Check that all powers have names and at least one die
+    for (const power of ps.powers) {
+      if (!power.name.trim()) {
+        Alert.alert("Error", `Power set "${ps.name}" has a power without a name`);
+        return false;
+      }
+      if (!power.dice || power.dice.length === 0) {
+        Alert.alert("Error", `Power "${power.name}" must have at least one die`);
+        return false;
+      }
+    }
+    
+    // Check that all SFX have names
+    for (const sfx of ps.sfx) {
+      if (!sfx.name.trim()) {
+        Alert.alert("Error", `Power set "${ps.name}" has an SFX without a name`);
+        return false;
+      }
+    }
+    
+    // Check that all limits have names
+    for (const limit of ps.limits) {
+      if (!limit.name.trim()) {
+        Alert.alert("Error", `Power set "${ps.name}" has a limit without a name`);
+        return false;
+      }
+    }
+    
+    return true;
+  });
 
-    const character: Character = {
-      name: name.trim(),
-      pp: existingCharacter?.pp || 1,
-      xp: existingCharacter?.xp || 0,
-      affiliations: {
-        solo: soloAffiliation,
-        buddy: buddyAffiliation,
-        team: teamAffiliation,
-      },
-      distinctions: [
-        { name: distinction1 || "Distinction 1", dice: "d8" },
-        { name: distinction2 || "Distinction 2", dice: "d8" },
-        { name: distinction3 || "Distinction 3", dice: "d8" },
-      ],
-      powerSets,
-      specialties,
-      milestones,
-      stress: existingCharacter?.stress || {
-        physical: { current: null, max: "d12" },
-        mental: { current: null, max: "d12" },
-        emotional: { current: null, max: "d12" },
-      },
-    };
+  // Validate specialties
+  const validatedSpecialties = specialties.filter(spec => {
+    if (!spec.name.trim()) {
+      Alert.alert("Error", "All specialties must have a name");
+      return false;
+    }
+    return true;
+  });
 
-    onSave(character);
+  // Validate milestones
+  const validatedMilestones = milestones.filter(milestone => {
+    if (!milestone.name.trim()) {
+      Alert.alert("Error", "All milestones must have a name");
+      return false;
+    }
+    
+    // Check that all rewards have descriptions
+    for (const reward of milestone.rewards) {
+      if (!reward.description.trim()) {
+        Alert.alert("Error", `Milestone "${milestone.name}" has a reward without a description`);
+        return false;
+      }
+    }
+    
+    return true;
+  });
+
+  const character: Character = {
+    name: name.trim(),
+    pp: existingCharacter?.pp || 1,
+    xp: existingCharacter?.xp || 0,
+    affiliations: {
+      solo: soloAffiliation,
+      buddy: buddyAffiliation,
+      team: teamAffiliation,
+    },
+    distinctions: [
+      { name: distinction1 || "Distinction 1", dice: "d8" },
+      { name: distinction2 || "Distinction 2", dice: "d8" },
+      { name: distinction3 || "Distinction 3", dice: "d8" },
+    ],
+    powerSets: validatedPowerSets,
+    specialties: validatedSpecialties,
+    milestones: validatedMilestones,
+    stress: existingCharacter?.stress || {
+      physical: { current: null, max: "d12" },
+      mental: { current: null, max: "d12" },
+      emotional: { current: null, max: "d12" },
+    },
   };
+
+  onSave(character);
+};
 
   // Power Set functions
   const addPowerSet = () => {
-    setPowerSets([...powerSets, { name: "", powers: [], sfx: [] }]);
+    setPowerSets([...powerSets, { name: "", powers: [], sfx: [], limits: [] }]);
   };
 
   const updatePowerSetName = (index: number, name: string) => {
@@ -192,6 +258,31 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
   // Specialty functions
   const addSpecialty = () => {
     setSpecialties([...specialties, { name: "", dice: "d6" }]);
+  };
+
+  const addLimitToPowerSet = (powerSetIndex: number) => {
+    const updated = [...powerSets];
+    updated[powerSetIndex].limits.push({ name: "", description: "" });
+    setPowerSets(updated);
+  };
+
+  const updateLimit = (
+    powerSetIndex: number,
+    limitIndex: number,
+    field: "name" | "description",
+    value: string
+  ) => {
+    const updated = [...powerSets];
+    updated[powerSetIndex].limits[limitIndex][field] = value;
+    setPowerSets(updated);
+  };
+
+  const removeLimit = (powerSetIndex: number, limitIndex: number) => {
+    const updated = [...powerSets];
+    updated[powerSetIndex].limits = updated[powerSetIndex].limits.filter(
+      (_, i) => i !== limitIndex
+    );
+    setPowerSets(updated);
   };
 
   const updateSpecialty = (
@@ -493,6 +584,46 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
                   />
                 </View>
               ))}
+
+              {/* Limits */}
+              <Text style={styles.subLabel}>Limits</Text>
+              {powerSet.limits.map((limit, lIndex) => (
+                <View key={lIndex} style={styles.sfxContainer}>
+                  <View style={styles.itemRow}>
+                    <TextInput
+                      style={[styles.input, styles.flex1]}
+                      value={limit.name}
+                      onChangeText={(text) =>
+                        updateLimit(psIndex, lIndex, "name", text)
+                      }
+                      placeholder="Limit name"
+                      placeholderTextColor="#95a5a6"
+                    />
+                    <TouchableOpacity
+                      style={styles.removeButton}
+                      onPress={() => removeLimit(psIndex, lIndex)}
+                    >
+                      <Text style={styles.removeButtonText}>×</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <TextInput
+                    style={[styles.input, styles.multiline]}
+                    value={limit.description}
+                    onChangeText={(text) =>
+                      updateLimit(psIndex, lIndex, "description", text)
+                    }
+                    placeholder="Limit description (e.g., 'Earn 1 PP when...')"
+                    placeholderTextColor="#95a5a6"
+                    multiline
+                  />
+                </View>
+              ))}
+              <TouchableOpacity
+                style={styles.addItemButton}
+                onPress={() => addLimitToPowerSet(psIndex)}
+              >
+                <Text style={styles.addItemButtonText}>+ Add Limit</Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.addItemButton}
                 onPress={() => addSFXToPowerSet(psIndex)}

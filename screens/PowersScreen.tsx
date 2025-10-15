@@ -84,6 +84,18 @@ export const PowersScreen: React.FC<PowersScreenProps> = ({
               ))}
             </>
           )}
+          {/* Limits */}
+{powerSet?.limits.length > 0 && (
+  <>
+    <Text style={styles.subTitle}>Limits</Text>
+    {powerSet.limits.map((limit, lIndex) => (
+      <View key={lIndex} style={styles.limitItem}>
+        <Text style={styles.limitName}>{limit.name}</Text>
+        <Text style={styles.limitDescription}>{limit.description}</Text>
+      </View>
+    ))}
+  </>
+)}
         </View>
       ))}
     </ScrollView>
@@ -174,4 +186,23 @@ const styles = StyleSheet.create({
     color: "#7f8c8d",
     lineHeight: 18,
   },
+  limitItem: {
+  backgroundColor: '#fff3cd',
+  padding: 12,
+  borderRadius: 8,
+  marginBottom: 8,
+  borderLeftWidth: 4,
+  borderLeftColor: '#f39c12',
+},
+limitName: {
+  fontSize: 14,
+  fontWeight: '600',
+  color: '#856404',
+  marginBottom: 4,
+},
+limitDescription: {
+  fontSize: 13,
+  color: '#856404',
+  lineHeight: 18,
+},
 });

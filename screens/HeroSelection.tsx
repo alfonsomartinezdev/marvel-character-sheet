@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ interface HeroSelectionProps {
   heroStates: Map<string, any>;
   onCreateNew: () => void;
   onEditHero: (hero: Character) => void;
+  onDeleteHero: (hero: Character) => void;
+  defaultHeroes: Character[];
 }
 
 export const HeroSelection: React.FC<HeroSelectionProps> = ({
@@ -22,11 +24,16 @@ export const HeroSelection: React.FC<HeroSelectionProps> = ({
   heroStates,
   onCreateNew,
   onEditHero,
+  onDeleteHero,
+  defaultHeroes,
 }) => {
+  const [expandedHero, setExpandedHero] = useState<string | null>(null);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Select Your Hero</Text>
+        <Text style={styles.subtitle}>Long press to show options</Text>
       </View>
 
       <ScrollView style={styles.heroList}>
@@ -34,12 +41,24 @@ export const HeroSelection: React.FC<HeroSelectionProps> = ({
           const heroState = heroStates.get(hero.name);
           const currentPP = heroState?.pp ?? hero.pp;
           const currentXP = heroState?.xp ?? hero.xp;
+          const isDefault = defaultHeroes.some((h) => h.name === hero.name);
+          const isExpanded = expandedHero === hero.name;
 
           return (
             <View key={index} style={styles.heroCardContainer}>
               <TouchableOpacity
                 style={styles.heroCard}
-                onPress={() => onSelectHero(hero)}
+                onPress={() => {
+                  if (isExpanded) {
+                    setExpandedHero(null);
+                  } else {
+                    onSelectHero(hero);
+                  }
+                }}
+                onLongPress={() => {
+                  setExpandedHero(isExpanded ? null : hero.name);
+                }}
+                delayLongPress={500}
               >
                 <View style={styles.heroInfo}>
                   <Text style={styles.heroName}>{hero.name}</Text>
@@ -49,19 +68,36 @@ export const HeroSelection: React.FC<HeroSelectionProps> = ({
                   </View>
                   <View style={styles.affiliations}>
                     <Text style={styles.affiliationText}>
-                      Solo {hero.affiliations.solo} • Buddy{" "}
-                      {hero.affiliations.buddy} • Team {hero.affiliations.team}
+                      Solo {hero.affiliations.solo} - Buddy {hero.affiliations.buddy} - Team {hero.affiliations.team}
                     </Text>
                   </View>
                 </View>
-                <Text style={styles.arrow}>›</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.editButton}
-                onPress={() => onEditHero(hero)}
-              >
-                <Text style={styles.editButtonText}>✎</Text>
-              </TouchableOpacity>
+
+              {isExpanded && (
+                <View style={styles.actionButtons}>
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    onPress={() => {
+                      setExpandedHero(null);
+                      onEditHero(hero);
+                    }}
+                  >
+                    <Text style={styles.editButtonText}>Edit</Text>
+                  </TouchableOpacity>
+                  {!isDefault && (
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => {
+                        setExpandedHero(null);
+                        onDeleteHero(hero);
+                      }}
+                    >
+                      <Text style={styles.deleteButtonText}>Delete</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              )}
             </View>
           );
         })}
@@ -89,17 +125,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
   },
+  subtitle: {
+    fontSize: 12,
+    color: "#95a5a6",
+    marginTop: 4,
+  },
   heroList: {
     flex: 1,
     padding: 16,
   },
   heroCardContainer: {
-    flexDirection: "row",
-    alignItems: "center",
     marginBottom: 12,
   },
   heroCard: {
-    flex: 1,
     backgroundColor: "#fff",
     borderRadius: 8,
     padding: 20,
@@ -144,18 +182,34 @@ const styles = StyleSheet.create({
     color: "#bdc3c7",
     marginLeft: 16,
   },
+  actionButtons: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 8,
+  },
   editButton: {
+    flex: 1,
     backgroundColor: "#3498db",
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    padding: 12,
+    borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center",
-    marginLeft: 12,
+  },
+  deleteButton: {
+    flex: 1,
+    backgroundColor: "#e74c3c",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
   },
   editButtonText: {
-    fontSize: 24,
     color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  deleteButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   addButton: {
     backgroundColor: "#3498db",

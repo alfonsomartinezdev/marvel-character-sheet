@@ -43,21 +43,21 @@ export const DicePool: React.FC<DicePoolProps> = ({
       </View>
 
       {dicePool.length === 0 ? (
-        <Text style={styles.emptyText}>Tap attributes to build your dice pool</Text>
-      ) : (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollView}>
-          {dicePool.map((entry, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.diceItem}
-              onPress={() => onRemoveDice(entry)}
-            >
-              <Text style={styles.diceValue}>{entry.dice}</Text>
-              <Text style={styles.diceSource}>{entry.source}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      )}
+  <Text style={styles.emptyText}>Tap attributes to build your dice pool</Text>
+) : (
+  <View style={styles.diceGrid}>
+    {dicePool.map((entry, index) => (
+      <TouchableOpacity
+        key={index}
+        style={styles.diceItem}
+        onPress={() => onRemoveDice(entry)}
+      >
+        <Text style={styles.diceValue}>{entry.dice}</Text>
+        <Text style={styles.diceSource}>{entry.source}</Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+)}
 
       {/* Dice Picker Modal */}
       <Modal
@@ -142,15 +142,6 @@ const styles = StyleSheet.create({
   scrollView: {
     flexDirection: 'row',
   },
-  diceItem: {
-    backgroundColor: '#34495e',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginRight: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-    minWidth: 70,
-  },
   diceValue: {
     color: '#fff',
     fontSize: 20,
@@ -208,5 +199,17 @@ const styles = StyleSheet.create({
   cancelText: {
     color: '#7f8c8d',
     fontSize: 16,
-  },
+  },diceGrid: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  gap: 8,
+},
+diceItem: {
+  backgroundColor: '#34495e',
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  borderRadius: 8,
+  alignItems: 'center',
+  minWidth: 70,
+},
 });

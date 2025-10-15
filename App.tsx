@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   Text,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Character, DicePoolEntry, DieType } from "./types/Character";
@@ -123,6 +124,33 @@ export default function App() {
     setEditingHero(hero);
     setShowCreator(true);
   };
+
+  const handleDeleteHero = (hero: Character) => {
+  Alert.alert(
+    'Delete Character',
+    `Are you sure you want to delete ${hero.name}?`,
+    [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          const updatedCustomHeroes = customHeroes.filter(h => h.name !== hero.name);
+          setCustomHeroes(updatedCustomHeroes);
+          
+          // Remove from heroStates as well
+          const newHeroStates = new Map(heroStates);
+          newHeroStates.delete(hero.name);
+          setHeroStates(newHeroStates);
+          
+          // Save both to AsyncStorage
+          AsyncStorage.setItem('customHeroes', JSON.stringify(updatedCustomHeroes));
+          AsyncStorage.setItem('heroStates', JSON.stringify(Object.fromEntries(newHeroStates)));
+        },
+      },
+    ]
+  );
+};
 
   // Initialize state for a hero if it doesn't exist
   const initializeHeroState = (hero: Character): HeroState => {
@@ -371,13 +399,15 @@ export default function App() {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor="#2c3e50" />
-        <HeroSelection
-          heroes={allHeroes}
-          onSelectHero={handleSelectHero}
-          heroStates={heroStates}
-          onCreateNew={handleCreateNewHero}
-          onEditHero={handleEditHero}
-        />
+       <HeroSelection
+  heroes={allHeroes}
+  onSelectHero={handleSelectHero}
+  heroStates={heroStates}
+  onCreateNew={handleCreateNewHero}
+  onEditHero={handleEditHero}
+  onDeleteHero={handleDeleteHero}
+  defaultHeroes={heroes}  // Pass default heroes so we know which can't be deleted
+/>
       </SafeAreaView>
     );
   }
