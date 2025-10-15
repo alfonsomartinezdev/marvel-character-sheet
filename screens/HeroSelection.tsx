@@ -15,6 +15,8 @@ interface HeroSelectionProps {
   onCreateNew: () => void;
   onEditHero: (hero: Character) => void;
   onDeleteHero: (hero: Character) => void;
+  onExportHero: (hero: Character) => void;
+  onScanCharacter: () => void;
   defaultHeroes: Character[];
 }
 
@@ -25,6 +27,8 @@ export const HeroSelection: React.FC<HeroSelectionProps> = ({
   onCreateNew,
   onEditHero,
   onDeleteHero,
+  onExportHero,
+  onScanCharacter,
   defaultHeroes,
 }) => {
   const [expandedHero, setExpandedHero] = useState<string | null>(null);
@@ -68,7 +72,8 @@ export const HeroSelection: React.FC<HeroSelectionProps> = ({
                   </View>
                   <View style={styles.affiliations}>
                     <Text style={styles.affiliationText}>
-                      Solo {hero.affiliations.solo} - Buddy {hero.affiliations.buddy} - Team {hero.affiliations.team}
+                      Solo {hero.affiliations.solo} - Buddy{" "}
+                      {hero.affiliations.buddy} - Team {hero.affiliations.team}
                     </Text>
                   </View>
                 </View>
@@ -84,6 +89,15 @@ export const HeroSelection: React.FC<HeroSelectionProps> = ({
                     }}
                   >
                     <Text style={styles.editButtonText}>Edit</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.exportButton}
+                    onPress={() => {
+                      setExpandedHero(null);
+                      onExportHero(hero);
+                    }}
+                  >
+                    <Text style={styles.exportButtonText}>Export</Text>
                   </TouchableOpacity>
                   {!isDefault && (
                     <TouchableOpacity
@@ -101,7 +115,9 @@ export const HeroSelection: React.FC<HeroSelectionProps> = ({
             </View>
           );
         })}
-
+        <TouchableOpacity style={styles.scanButton} onPress={onScanCharacter}>
+          <Text style={styles.scanButtonText}>Scan Character QR Code</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.addButton} onPress={onCreateNew}>
           <Text style={styles.addButtonText}>+ Create New Hero</Text>
         </TouchableOpacity>
@@ -219,6 +235,31 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   addButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  exportButton: {
+    flex: 1,
+    backgroundColor: "#9b59b6",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  exportButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  scanButton: {
+    backgroundColor: "#16a085",
+    borderRadius: 8,
+    padding: 20,
+    alignItems: "center",
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  scanButtonText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#fff",

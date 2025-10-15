@@ -22,6 +22,9 @@ import { SpecialtiesScreen } from "./screens/SpecialtiesScreen";
 import { TrackingScreen } from "./screens/TrackingScreen";
 import { CharacterCreator } from "./screens/CharacterCreator";
 
+import { QRExportModal } from "./components/QRExportModal";
+import { QRScannerModal } from "./components/QRScannerModal";
+
 const Tab = createMaterialTopTabNavigator();
 
 interface HeroState {
@@ -46,8 +49,12 @@ export default function App() {
 
   const [selectedHero, setSelectedHero] = useState<Character | null>(null);
   const [heroStates, setHeroStates] = useState<Map<string, HeroState>>(
-    new Map()
+    new Map(),
   );
+
+  const [showQRExport, setShowQRExport] = useState(false);
+  const [showQRScanner, setShowQRScanner] = useState(false);
+  const [exportingHero, setExportingHero] = useState<Character | null>(null);
 
   // Load saved hero states when app starts
   useEffect(() => {
@@ -126,31 +133,71 @@ export default function App() {
   };
 
   const handleDeleteHero = (hero: Character) => {
-  Alert.alert(
-    'Delete Character',
-    `Are you sure you want to delete ${hero.name}?`,
-    [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => {
-          const updatedCustomHeroes = customHeroes.filter(h => h.name !== hero.name);
-          setCustomHeroes(updatedCustomHeroes);
-          
-          // Remove from heroStates as well
-          const newHeroStates = new Map(heroStates);
-          newHeroStates.delete(hero.name);
-          setHeroStates(newHeroStates);
-          
-          // Save both to AsyncStorage
-          AsyncStorage.setItem('customHeroes', JSON.stringify(updatedCustomHeroes));
-          AsyncStorage.setItem('heroStates', JSON.stringify(Object.fromEntries(newHeroStates)));
+    Alert.alert(
+      "Delete Character",
+      `Are you sure you want to delete ${hero.name}?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            const updatedCustomHeroes = customHeroes.filter(
+              (h) => h.name !== hero.name,
+            );
+            setCustomHeroes(updatedCustomHeroes);
+
+            // Remove from heroStates as well
+            const newHeroStates = new Map(heroStates);
+            newHeroStates.delete(hero.name);
+            setHeroStates(newHeroStates);
+
+            // Save both to AsyncStorage
+            AsyncStorage.setItem(
+              "customHeroes",
+              JSON.stringify(updatedCustomHeroes),
+            );
+            AsyncStorage.setItem(
+              "heroStates",
+              JSON.stringify(Object.fromEntries(newHeroStates)),
+            );
+          },
         },
-      },
-    ]
-  );
-};
+      ],
+    );
+  };
+
+  const handleExportHero = (hero: Character) => {
+    setExportingHero(hero);
+    setShowQRExport(true);
+  };
+
+  const handleScanCharacter = () => {
+    setShowQRScanner(true);
+  };
+
+  const handleCharacterScanned = (character: Character) => {
+    // Check if character with same name already exists
+    const exists = allHeroes.some((h) => h.name === character.name);
+
+    if (exists) {
+      // Add a number suffix
+      let counter = 2;
+      let newName = `${character.name} (${counter})`;
+      while (allHeroes.some((h) => h.name === newName)) {
+        counter++;
+        newName = `${character.name} (${counter})`;
+      }
+      character.name = newName;
+    }
+
+    // Add to custom heroes
+    const updatedCustomHeroes = [...customHeroes, character];
+    setCustomHeroes(updatedCustomHeroes);
+    AsyncStorage.setItem("customHeroes", JSON.stringify(updatedCustomHeroes));
+
+    Alert.alert("Success", `${character.name} has been imported!`);
+  };
 
   // Initialize state for a hero if it doesn't exist
   const initializeHeroState = (hero: Character): HeroState => {
@@ -251,14 +298,14 @@ export default function App() {
 
     // Check if this power is already selected
     const alreadySelected = currentState.selectedPowers.some(
-      (p) => p.source === powerName
+      (p) => p.source === powerName,
     );
 
     if (alreadySelected) {
       // Remove ALL dice from this power
       updateHeroState({
         selectedPowers: currentState.selectedPowers.filter(
-          (p) => p.source !== powerName
+          (p) => p.source !== powerName,
         ),
       });
     } else {
@@ -293,7 +340,7 @@ export default function App() {
       // Remove ALL dice from this power (not just one)
       updateHeroState({
         selectedPowers: currentState.selectedPowers.filter(
-          (p) => p.source !== entry.source
+          (p) => p.source !== entry.source,
         ),
       });
     } else {
@@ -330,7 +377,7 @@ export default function App() {
 
   const updateStress = (
     type: "physical" | "mental" | "emotional",
-    level: DieType | null
+    level: DieType | null,
   ) => {
     const currentState = getCurrentHeroState();
     if (!currentState) return;
@@ -348,7 +395,7 @@ export default function App() {
 
   const updateTrauma = (
     type: "physical" | "mental" | "emotional",
-    level: DieType | null
+    level: DieType | null,
   ) => {
     const currentState = getCurrentHeroState();
     if (!currentState) return;
@@ -399,15 +446,30 @@ export default function App() {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor="#2c3e50" />
-       <HeroSelection
-  heroes={allHeroes}
-  onSelectHero={handleSelectHero}
-  heroStates={heroStates}
-  onCreateNew={handleCreateNewHero}
-  onEditHero={handleEditHero}
-  onDeleteHero={handleDeleteHero}
-  defaultHeroes={heroes}  // Pass default heroes so we know which can't be deleted
-/>
+        <HeroSelection
+          heroes={allHeroes}
+          onSelectHero={handleSelectHero}
+          heroStates={heroStates}
+          onCreateNew={handleCreateNewHero}
+          onEditHero={handleEditHero}
+          onDeleteHero={handleDeleteHero}
+          onExportHero={handleExportHero}
+          onScanCharacter={handleScanCharacter}
+          defaultHeroes={heroes}
+        />
+        <QRExportModal
+          visible={showQRExport}
+          character={exportingHero}
+          onClose={() => {
+            setShowQRExport(false);
+            setExportingHero(null);
+          }}
+        />
+        <QRScannerModal
+          visible={showQRScanner}
+          onClose={() => setShowQRScanner(false)}
+          onCharacterScanned={handleCharacterScanned}
+        />
       </SafeAreaView>
     );
   }

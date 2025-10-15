@@ -1,4 +1,4 @@
-export type DieType = 'd4' | 'd6' | 'd8' | 'd10' | 'd12';
+export type DieType = "d4" | "d6" | "d8" | "d10" | "d12";
 
 export interface Affiliation {
   solo: DieType;

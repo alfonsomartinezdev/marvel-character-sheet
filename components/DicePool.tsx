@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
-import { DicePoolEntry, DieType } from '../types/Character';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+} from "react-native";
+import { DicePoolEntry, DieType } from "../types/Character";
 
 interface DicePoolProps {
   dicePool: DicePoolEntry[];
@@ -9,14 +16,14 @@ interface DicePoolProps {
   onAddCustomDice: (dice: DieType) => void;
 }
 
-export const DicePool: React.FC<DicePoolProps> = ({ 
-  dicePool, 
-  onRemoveDice, 
+export const DicePool: React.FC<DicePoolProps> = ({
+  dicePool,
+  onRemoveDice,
   onClearPool,
-  onAddCustomDice 
+  onAddCustomDice,
 }) => {
   const [showPicker, setShowPicker] = useState(false);
-  const diceTypes: DieType[] = ['d4', 'd6', 'd8', 'd10', 'd12'];
+  const diceTypes: DieType[] = ["d4", "d6", "d8", "d10", "d12"];
 
   const handleAddDice = (dice: DieType) => {
     onAddCustomDice(dice);
@@ -28,8 +35,8 @@ export const DicePool: React.FC<DicePoolProps> = ({
       <View style={styles.header}>
         <Text style={styles.title}>Dice Pool ({dicePool.length})</Text>
         <View style={styles.headerButtons}>
-          <TouchableOpacity 
-            onPress={() => setShowPicker(true)} 
+          <TouchableOpacity
+            onPress={() => setShowPicker(true)}
             style={styles.addButton}
           >
             <Text style={styles.addButtonText}>+ Add</Text>
@@ -43,21 +50,23 @@ export const DicePool: React.FC<DicePoolProps> = ({
       </View>
 
       {dicePool.length === 0 ? (
-  <Text style={styles.emptyText}>Tap attributes to build your dice pool</Text>
-) : (
-  <View style={styles.diceGrid}>
-    {dicePool.map((entry, index) => (
-      <TouchableOpacity
-        key={index}
-        style={styles.diceItem}
-        onPress={() => onRemoveDice(entry)}
-      >
-        <Text style={styles.diceValue}>{entry.dice}</Text>
-        <Text style={styles.diceSource}>{entry.source}</Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-)}
+        <Text style={styles.emptyText}>
+          Tap attributes to build your dice pool
+        </Text>
+      ) : (
+        <View style={styles.diceGrid}>
+          {dicePool.map((entry, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.diceItem}
+              onPress={() => onRemoveDice(entry)}
+            >
+              <Text style={styles.diceValue}>{entry.dice}</Text>
+              <Text style={styles.diceSource}>{entry.source}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
       {/* Dice Picker Modal */}
       <Modal
@@ -66,7 +75,7 @@ export const DicePool: React.FC<DicePoolProps> = ({
         animationType="fade"
         onRequestClose={() => setShowPicker(false)}
       >
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.modalOverlay}
           activeOpacity={1}
           onPress={() => setShowPicker(false)}
@@ -84,7 +93,7 @@ export const DicePool: React.FC<DicePoolProps> = ({
                 </TouchableOpacity>
               ))}
             </View>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.cancelButton}
               onPress={() => setShowPicker(false)}
             >
@@ -99,117 +108,118 @@ export const DicePool: React.FC<DicePoolProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#2c3e50',
+    backgroundColor: "#2c3e50",
     padding: 16,
     borderTopWidth: 2,
-    borderTopColor: '#34495e',
+    borderTopColor: "#34495e",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   title: {
-    color: '#ecf0f1',
+    color: "#ecf0f1",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   headerButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
   },
   addButton: {
-    backgroundColor: '#27ae60',
+    backgroundColor: "#27ae60",
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 4,
   },
   addButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
   },
   clearButton: {
-    backgroundColor: '#e74c3c',
+    backgroundColor: "#e74c3c",
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 4,
   },
   clearText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
   },
   scrollView: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   diceValue: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
   diceSource: {
-    color: '#95a5a6',
+    color: "#95a5a6",
     fontSize: 10,
   },
   emptyText: {
-    color: '#95a5a6',
-    textAlign: 'center',
+    color: "#95a5a6",
+    textAlign: "center",
     fontSize: 14,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   pickerContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 24,
-    width: '80%',
+    width: "80%",
     maxWidth: 300,
   },
   pickerTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#2c3e50',
+    fontWeight: "bold",
+    color: "#2c3e50",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   diceOptions: {
     gap: 12,
   },
   diceOption: {
-    backgroundColor: '#3498db',
+    backgroundColor: "#3498db",
     padding: 16,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
   diceOptionText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   cancelButton: {
     marginTop: 16,
     padding: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   cancelText: {
-    color: '#7f8c8d',
+    color: "#7f8c8d",
     fontSize: 16,
-  },diceGrid: {
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  gap: 8,
-},
-diceItem: {
-  backgroundColor: '#34495e',
-  paddingVertical: 12,
-  paddingHorizontal: 16,
-  borderRadius: 8,
-  alignItems: 'center',
-  minWidth: 70,
-},
+  },
+  diceGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  diceItem: {
+    backgroundColor: "#34495e",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    minWidth: 70,
+  },
 });

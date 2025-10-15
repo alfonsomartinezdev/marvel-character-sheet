@@ -1,6 +1,12 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Character, DieType } from '../types/Character';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { Character, DieType } from "../types/Character";
 
 interface StressState {
   stress: DieType | null;
@@ -15,30 +21,40 @@ interface TrackingScreenProps {
     mental: StressState;
     emotional: StressState;
   };
-  onUpdateStress: (type: 'physical' | 'mental' | 'emotional', level: DieType | null) => void;
-  onUpdateTrauma: (type: 'physical' | 'mental' | 'emotional', level: DieType | null) => void;
+  onUpdateStress: (
+    type: "physical" | "mental" | "emotional",
+    level: DieType | null,
+  ) => void;
+  onUpdateTrauma: (
+    type: "physical" | "mental" | "emotional",
+    level: DieType | null,
+  ) => void;
 }
 
-export const TrackingScreen: React.FC<TrackingScreenProps> = ({ 
-  character, 
+export const TrackingScreen: React.FC<TrackingScreenProps> = ({
+  character,
   stress,
   onUpdateStress,
-  onUpdateTrauma
+  onUpdateTrauma,
 }) => {
   const renderStressTrack = (
-    label: string, 
-    type: 'physical' | 'mental' | 'emotional',
-    stressState: StressState
+    label: string,
+    type: "physical" | "mental" | "emotional",
+    stressState: StressState,
   ) => {
-    const levels: DieType[] = ['d6', 'd8', 'd10', 'd12'];
+    const levels: DieType[] = ["d6", "d8", "d10", "d12"];
     const maxIndex = levels.indexOf(stressState.max);
-    const stressIndex = stressState.stress ? levels.indexOf(stressState.stress) : -1;
-    const traumaIndex = stressState.trauma ? levels.indexOf(stressState.trauma) : -1;
+    const stressIndex = stressState.stress
+      ? levels.indexOf(stressState.stress)
+      : -1;
+    const traumaIndex = stressState.trauma
+      ? levels.indexOf(stressState.trauma)
+      : -1;
 
     return (
       <View style={styles.stressTrack}>
         <Text style={styles.stressLabel}>{label}</Text>
-        
+
         {/* Stress Levels */}
         <View style={styles.stressRow}>
           <Text style={styles.stressSubLabel}>Stress</Text>
@@ -126,10 +142,12 @@ export const TrackingScreen: React.FC<TrackingScreenProps> = ({
       {/* Stress & Trauma */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Stress & Trauma</Text>
-        <Text style={styles.helperText}>Tap to mark/unmark stress and trauma</Text>
-        {renderStressTrack('Physical', 'physical', stress.physical)}
-        {renderStressTrack('Mental', 'mental', stress.mental)}
-        {renderStressTrack('Emotional', 'emotional', stress.emotional)}
+        <Text style={styles.helperText}>
+          Tap to mark/unmark stress and trauma
+        </Text>
+        {renderStressTrack("Physical", "physical", stress.physical)}
+        {renderStressTrack("Mental", "mental", stress.mental)}
+        {renderStressTrack("Emotional", "emotional", stress.emotional)}
       </View>
     </ScrollView>
   );
@@ -138,18 +156,18 @@ export const TrackingScreen: React.FC<TrackingScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ecf0f1',
+    backgroundColor: "#ecf0f1",
   },
   section: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     marginTop: 16,
     padding: 16,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-    backgroundColor: '#2c3e50',
+    fontWeight: "bold",
+    color: "#fff",
+    backgroundColor: "#2c3e50",
     padding: 12,
     marginHorizontal: -16,
     marginTop: -16,
@@ -157,32 +175,32 @@ const styles = StyleSheet.create({
   },
   helperText: {
     fontSize: 12,
-    color: '#7f8c8d',
-    fontStyle: 'italic',
+    color: "#7f8c8d",
+    fontStyle: "italic",
     marginBottom: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
   milestoneItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 12,
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
   xpBadge: {
-    backgroundColor: '#3498db',
-    color: '#fff',
+    backgroundColor: "#3498db",
+    color: "#fff",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginRight: 12,
     minWidth: 45,
-    textAlign: 'center',
+    textAlign: "center",
   },
   milestoneText: {
     flex: 1,
     fontSize: 14,
-    color: '#2c3e50',
+    color: "#2c3e50",
     lineHeight: 20,
   },
   stressTrack: {
@@ -190,48 +208,48 @@ const styles = StyleSheet.create({
   },
   stressLabel: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#2c3e50',
+    fontWeight: "600",
+    color: "#2c3e50",
     marginBottom: 8,
   },
   stressRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
   stressSubLabel: {
     fontSize: 12,
-    color: '#7f8c8d',
+    color: "#7f8c8d",
     width: 60,
   },
   stressBoxes: {
-    flexDirection: 'row',
+    flexDirection: "row",
     flex: 1,
   },
   stressBox: {
     borderWidth: 2,
-    borderColor: '#bdc3c7',
+    borderColor: "#bdc3c7",
     paddingHorizontal: 12,
     paddingVertical: 8,
     marginRight: 8,
     borderRadius: 4,
   },
   stressBoxActive: {
-    backgroundColor: '#2c3e50',
-    borderColor: '#2c3e50',
+    backgroundColor: "#2c3e50",
+    borderColor: "#2c3e50",
   },
   traumaBoxActive: {
-    backgroundColor: '#e74c3c',
-    borderColor: '#e74c3c',
+    backgroundColor: "#e74c3c",
+    borderColor: "#e74c3c",
   },
   stressText: {
     fontSize: 14,
-    color: '#2c3e50',
+    color: "#2c3e50",
   },
   stressTextActive: {
-    color: '#fff',
+    color: "#fff",
   },
   traumaTextActive: {
-    color: '#fff',
+    color: "#fff",
   },
 });

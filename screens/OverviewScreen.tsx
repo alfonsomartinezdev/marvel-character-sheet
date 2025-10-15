@@ -36,31 +36,43 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
       <View style={styles.header}>
         <Text style={styles.characterName}>{character.name}</Text>
         <View style={styles.stats}>
-  <View style={styles.statBox}>
-    <Text style={styles.statLabel}>PP</Text>
-    <View style={styles.statControls}>
-      <TouchableOpacity onPress={() => onUpdatePP(-1)} style={styles.minusButton}>
-        <Text style={styles.buttonText}>−</Text>
-      </TouchableOpacity>
-      <Text style={styles.statValue}>{pp}</Text>
-      <TouchableOpacity onPress={() => onUpdatePP(1)} style={styles.plusButton}>
-        <Text style={styles.buttonText}>+</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-  <View style={styles.statBox}>
-    <Text style={styles.statLabel}>XP</Text>
-    <View style={styles.statControls}>
-      <TouchableOpacity onPress={() => onUpdateXP(-1)} style={styles.minusButton}>
-        <Text style={styles.buttonText}>−</Text>
-      </TouchableOpacity>
-      <Text style={styles.statValue}>{xp}</Text>
-      <TouchableOpacity onPress={() => onUpdateXP(1)} style={styles.plusButton}>
-        <Text style={styles.buttonText}>+</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</View>
+          <View style={styles.statBox}>
+            <Text style={styles.statLabel}>PP</Text>
+            <View style={styles.statControls}>
+              <TouchableOpacity
+                onPress={() => onUpdatePP(-1)}
+                style={styles.minusButton}
+              >
+                <Text style={styles.buttonText}>−</Text>
+              </TouchableOpacity>
+              <Text style={styles.statValue}>{pp}</Text>
+              <TouchableOpacity
+                onPress={() => onUpdatePP(1)}
+                style={styles.plusButton}
+              >
+                <Text style={styles.buttonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statLabel}>XP</Text>
+            <View style={styles.statControls}>
+              <TouchableOpacity
+                onPress={() => onUpdateXP(-1)}
+                style={styles.minusButton}
+              >
+                <Text style={styles.buttonText}>−</Text>
+              </TouchableOpacity>
+              <Text style={styles.statValue}>{xp}</Text>
+              <TouchableOpacity
+                onPress={() => onUpdateXP(1)}
+                style={styles.plusButton}
+              >
+                <Text style={styles.buttonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </View>
 
       <View style={styles.section}>
@@ -285,29 +297,29 @@ const styles = StyleSheet.create({
     borderColor: "#3498db",
   },
   statControls: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: 8,
-},
-minusButton: {
-  backgroundColor: '#e74c3c',
-  width: 28,
-  height: 28,
-  borderRadius: 14,
-  alignItems: 'center',
-  justifyContent: 'center',
-},
-plusButton: {
-  backgroundColor: '#27ae60',
-  width: 28,
-  height: 28,
-  borderRadius: 14,
-  alignItems: 'center',
-  justifyContent: 'center',
-},
-buttonText: {
-  color: '#fff',
-  fontSize: 18,
-  fontWeight: 'bold',
-},
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  minusButton: {
+    backgroundColor: "#e74c3c",
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  plusButton: {
+    backgroundColor: "#27ae60",
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
 });

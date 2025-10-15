@@ -31,142 +31,157 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
 
   // Affiliations
   const [soloAffiliation, setSoloAffiliation] = useState<DieType>(
-    existingCharacter?.affiliations.solo || "d8"
+    existingCharacter?.affiliations.solo || "d8",
   );
   const [buddyAffiliation, setBuddyAffiliation] = useState<DieType>(
-    existingCharacter?.affiliations.buddy || "d8"
+    existingCharacter?.affiliations.buddy || "d8",
   );
   const [teamAffiliation, setTeamAffiliation] = useState<DieType>(
-    existingCharacter?.affiliations.team || "d8"
+    existingCharacter?.affiliations.team || "d8",
   );
 
   // Distinctions
   const [distinction1, setDistinction1] = useState(
-    existingCharacter?.distinctions[0]?.name || ""
+    existingCharacter?.distinctions[0]?.name || "",
   );
   const [distinction2, setDistinction2] = useState(
-    existingCharacter?.distinctions[1]?.name || ""
+    existingCharacter?.distinctions[1]?.name || "",
   );
   const [distinction3, setDistinction3] = useState(
-    existingCharacter?.distinctions[2]?.name || ""
+    existingCharacter?.distinctions[2]?.name || "",
   );
 
   // Power Sets
   const [powerSets, setPowerSets] = useState<PowerSet[]>(
-    existingCharacter?.powerSets || []
+    existingCharacter?.powerSets || [],
   );
 
   // Specialties
   const [specialties, setSpecialties] = useState<Specialty[]>(
-    existingCharacter?.specialties || []
+    existingCharacter?.specialties || [],
   );
 
   // Milestones
   const [milestones, setMilestones] = useState<Milestone[]>(
-    existingCharacter?.milestones || []
+    existingCharacter?.milestones || [],
   );
 
   const defaultDiceOptions: DieType[] = ["d4", "d6", "d8", "d10", "d12"];
   const affiliationDiceOptions: DieType[] = ["d8", "d10", "d12"];
 
   const handleSave = () => {
-  // Validate character name
-  if (!name.trim()) {
-    Alert.alert("Error", "Please enter a character name");
-    return;
-  }
+    // Validate character name
+    if (!name.trim()) {
+      Alert.alert("Error", "Please enter a character name");
+      return;
+    }
 
-  // Validate power sets
-  const validatedPowerSets = powerSets.filter(ps => {
-    if (!ps.name.trim()) {
-      Alert.alert("Error", "All power sets must have a name");
-      return false;
-    }
-    
-    // Check that all powers have names and at least one die
-    for (const power of ps.powers) {
-      if (!power.name.trim()) {
-        Alert.alert("Error", `Power set "${ps.name}" has a power without a name`);
+    // Validate power sets
+    const validatedPowerSets = powerSets.filter((ps) => {
+      if (!ps.name.trim()) {
+        Alert.alert("Error", "All power sets must have a name");
         return false;
       }
-      if (!power.dice || power.dice.length === 0) {
-        Alert.alert("Error", `Power "${power.name}" must have at least one die`);
-        return false;
-      }
-    }
-    
-    // Check that all SFX have names
-    for (const sfx of ps.sfx) {
-      if (!sfx.name.trim()) {
-        Alert.alert("Error", `Power set "${ps.name}" has an SFX without a name`);
-        return false;
-      }
-    }
-    
-    // Check that all limits have names
-    for (const limit of ps.limits) {
-      if (!limit.name.trim()) {
-        Alert.alert("Error", `Power set "${ps.name}" has a limit without a name`);
-        return false;
-      }
-    }
-    
-    return true;
-  });
 
-  // Validate specialties
-  const validatedSpecialties = specialties.filter(spec => {
-    if (!spec.name.trim()) {
-      Alert.alert("Error", "All specialties must have a name");
-      return false;
-    }
-    return true;
-  });
+      // Check that all powers have names and at least one die
+      for (const power of ps.powers) {
+        if (!power.name.trim()) {
+          Alert.alert(
+            "Error",
+            `Power set "${ps.name}" has a power without a name`,
+          );
+          return false;
+        }
+        if (!power.dice || power.dice.length === 0) {
+          Alert.alert(
+            "Error",
+            `Power "${power.name}" must have at least one die`,
+          );
+          return false;
+        }
+      }
 
-  // Validate milestones
-  const validatedMilestones = milestones.filter(milestone => {
-    if (!milestone.name.trim()) {
-      Alert.alert("Error", "All milestones must have a name");
-      return false;
-    }
-    
-    // Check that all rewards have descriptions
-    for (const reward of milestone.rewards) {
-      if (!reward.description.trim()) {
-        Alert.alert("Error", `Milestone "${milestone.name}" has a reward without a description`);
+      // Check that all SFX have names
+      for (const sfx of ps.sfx) {
+        if (!sfx.name.trim()) {
+          Alert.alert(
+            "Error",
+            `Power set "${ps.name}" has an SFX without a name`,
+          );
+          return false;
+        }
+      }
+
+      // Check that all limits have names
+      for (const limit of ps.limits) {
+        if (!limit.name.trim()) {
+          Alert.alert(
+            "Error",
+            `Power set "${ps.name}" has a limit without a name`,
+          );
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    // Validate specialties
+    const validatedSpecialties = specialties.filter((spec) => {
+      if (!spec.name.trim()) {
+        Alert.alert("Error", "All specialties must have a name");
         return false;
       }
-    }
-    
-    return true;
-  });
+      return true;
+    });
 
-  const character: Character = {
-    name: name.trim(),
-    pp: existingCharacter?.pp || 1,
-    xp: existingCharacter?.xp || 0,
-    affiliations: {
-      solo: soloAffiliation,
-      buddy: buddyAffiliation,
-      team: teamAffiliation,
-    },
-    distinctions: [
-      { name: distinction1 || "Distinction 1", dice: "d8" },
-      { name: distinction2 || "Distinction 2", dice: "d8" },
-      { name: distinction3 || "Distinction 3", dice: "d8" },
-    ],
-    powerSets: validatedPowerSets,
-    specialties: validatedSpecialties,
-    milestones: validatedMilestones,
-    stress: existingCharacter?.stress || {
-      physical: { current: null, max: "d12" },
-      mental: { current: null, max: "d12" },
-      emotional: { current: null, max: "d12" },
-    },
+    // Validate milestones
+    const validatedMilestones = milestones.filter((milestone) => {
+      if (!milestone.name.trim()) {
+        Alert.alert("Error", "All milestones must have a name");
+        return false;
+      }
+
+      // Check that all rewards have descriptions
+      for (const reward of milestone.rewards) {
+        if (!reward.description.trim()) {
+          Alert.alert(
+            "Error",
+            `Milestone "${milestone.name}" has a reward without a description`,
+          );
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    const character: Character = {
+      name: name.trim(),
+      pp: existingCharacter?.pp || 1,
+      xp: existingCharacter?.xp || 0,
+      affiliations: {
+        solo: soloAffiliation,
+        buddy: buddyAffiliation,
+        team: teamAffiliation,
+      },
+      distinctions: [
+        { name: distinction1 || "Distinction 1", dice: "d8" },
+        { name: distinction2 || "Distinction 2", dice: "d8" },
+        { name: distinction3 || "Distinction 3", dice: "d8" },
+      ],
+      powerSets: validatedPowerSets,
+      specialties: validatedSpecialties,
+      milestones: validatedMilestones,
+      stress: existingCharacter?.stress || {
+        physical: { current: null, max: "d12" },
+        mental: { current: null, max: "d12" },
+        emotional: { current: null, max: "d12" },
+      },
+    };
+
+    onSave(character);
   };
-
-  onSave(character);
-};
 
   // Power Set functions
   const addPowerSet = () => {
@@ -193,7 +208,7 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
     powerSetIndex: number,
     powerIndex: number,
     field: "name",
-    value: string
+    value: string,
   ) => {
     const updated = [...powerSets];
     updated[powerSetIndex].powers[powerIndex].name = value;
@@ -203,7 +218,7 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
   const addDieToPower = (
     powerSetIndex: number,
     powerIndex: number,
-    die: DieType
+    die: DieType,
   ) => {
     const updated = [...powerSets];
     updated[powerSetIndex].powers[powerIndex].dice.push(die);
@@ -213,7 +228,7 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
   const removeDieFromPower = (
     powerSetIndex: number,
     powerIndex: number,
-    dieIndex: number
+    dieIndex: number,
   ) => {
     const updated = [...powerSets];
     updated[powerSetIndex].powers[powerIndex].dice = updated[
@@ -225,7 +240,7 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
   const removePower = (powerSetIndex: number, powerIndex: number) => {
     const updated = [...powerSets];
     updated[powerSetIndex].powers = updated[powerSetIndex].powers.filter(
-      (_, i) => i !== powerIndex
+      (_, i) => i !== powerIndex,
     );
     setPowerSets(updated);
   };
@@ -240,7 +255,7 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
     powerSetIndex: number,
     sfxIndex: number,
     field: "name" | "description",
-    value: string
+    value: string,
   ) => {
     const updated = [...powerSets];
     updated[powerSetIndex].sfx[sfxIndex][field] = value;
@@ -250,7 +265,7 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
   const removeSFX = (powerSetIndex: number, sfxIndex: number) => {
     const updated = [...powerSets];
     updated[powerSetIndex].sfx = updated[powerSetIndex].sfx.filter(
-      (_, i) => i !== sfxIndex
+      (_, i) => i !== sfxIndex,
     );
     setPowerSets(updated);
   };
@@ -270,7 +285,7 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
     powerSetIndex: number,
     limitIndex: number,
     field: "name" | "description",
-    value: string
+    value: string,
   ) => {
     const updated = [...powerSets];
     updated[powerSetIndex].limits[limitIndex][field] = value;
@@ -280,7 +295,7 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
   const removeLimit = (powerSetIndex: number, limitIndex: number) => {
     const updated = [...powerSets];
     updated[powerSetIndex].limits = updated[powerSetIndex].limits.filter(
-      (_, i) => i !== limitIndex
+      (_, i) => i !== limitIndex,
     );
     setPowerSets(updated);
   };
@@ -288,7 +303,7 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
   const updateSpecialty = (
     index: number,
     field: "name" | "dice",
-    value: string
+    value: string,
   ) => {
     const updated = [...specialties];
     if (field === "name") {
@@ -328,7 +343,7 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
     milestoneIndex: number,
     rewardIndex: number,
     field: "xp" | "description",
-    value: string | number
+    value: string | number,
   ) => {
     const updated = [...milestones];
     if (field === "xp") {
@@ -343,7 +358,7 @@ export const CharacterCreator: React.FC<CharacterCreatorProps> = ({
   const removeReward = (milestoneIndex: number, rewardIndex: number) => {
     const updated = [...milestones];
     updated[milestoneIndex].rewards = updated[milestoneIndex].rewards.filter(
-      (_, i) => i !== rewardIndex
+      (_, i) => i !== rewardIndex,
     );
     setMilestones(updated);
   };
