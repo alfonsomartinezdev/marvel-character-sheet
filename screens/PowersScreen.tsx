@@ -47,23 +47,10 @@ export const PowersScreen: React.FC<PowersScreenProps> = ({
               }}
             >
               <View style={styles.itemContent}>
-                <Text
-                  style={[
-                    styles.itemName,
-                    isPowerSelected(power.name) && styles.itemNameSelected,
-                  ]}
-                >
-                  {power.name}
-                </Text>
+                <Text style={styles.itemName}>{power.name}</Text>
                 <View style={styles.diceList}>
                   {power.dice.map((die, dIndex) => (
-                    <Text
-                      key={dIndex}
-                      style={[
-                        styles.diceValue,
-                        isPowerSelected(power.name) && styles.diceValueSelected,
-                      ]}
-                    >
+                    <Text key={dIndex} style={styles.diceValue}>
                       {die}
                     </Text>
                   ))}
@@ -118,7 +105,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#fff",
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#1A1A1A",
     padding: 12,
     marginHorizontal: -16,
     marginTop: -16,
@@ -136,12 +123,13 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     marginBottom: 8,
-    borderWidth: 2,
-    borderColor: "transparent",
+    borderWidth: 3,
+    borderColor: "#bdc3c7",
   },
   itemSelected: {
-    backgroundColor: "#3498db",
-    borderColor: "#2980b9",
+    backgroundColor: "#fff",
+    borderColor: "#FDB913",
+    borderWidth: 3,
   },
   itemContent: {
     gap: 8,
@@ -149,10 +137,7 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#2c3e50",
-  },
-  itemNameSelected: {
-    color: "#fff",
+    color: "#1A1A1A",
   },
   diceList: {
     flexDirection: "row",
@@ -161,15 +146,13 @@ const styles = StyleSheet.create({
   diceValue: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#3498db",
+    color: "#1A1A1A",
     backgroundColor: "#fff",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 4,
-  },
-  diceValueSelected: {
-    backgroundColor: "#2c3e50",
-    color: "#fff",
+    borderWidth: 1,
+    borderColor: "#bdc3c7",
   },
   sfxItem: {
     backgroundColor: "#f8f9fa",
@@ -180,7 +163,7 @@ const styles = StyleSheet.create({
   sfxName: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#2c3e50",
+    color: "#1A1A1A",
     marginBottom: 4,
   },
   sfxDescription: {

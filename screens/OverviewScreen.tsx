@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     fontStyle: "italic",
-    color: "#2c3e50",
+    color: "#1A1A1A",
     marginBottom: 12,
   },
   stats: {
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#2c3e50",
+    color: "#1A1A1A",
   },
   section: {
     backgroundColor: "#fff",
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#fff",
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#1A1A1A",
     padding: 12,
     marginHorizontal: -16,
     marginTop: -16,
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   },
   affiliationLabel: {
     fontSize: 14,
-    color: "#2c3e50",
+    color: "#1A1A1A",
     marginBottom: 8,
     fontWeight: "600",
   },
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   distinctionName: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#2c3e50",
+    color: "#1A1A1A",
     flex: 1,
   },
   diceOptions: {
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   },
   diceButton: {
     backgroundColor: "#fff",
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: "#95a5a6",
     borderRadius: 4,
     padding: 12,
@@ -280,21 +280,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   d4Button: {
-    borderColor: "#27ae60",
+    borderColor: "#bdc3c7",
   },
   diceText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#2c3e50",
+    color: "#1A1A1A",
   },
   ppText: {
     fontSize: 10,
-    color: "#27ae60",
+    color: "#7f8c8d",
     marginTop: 2,
   },
   selectedDice: {
-    backgroundColor: "#3498db",
-    borderColor: "#3498db",
+    backgroundColor: "#fff",
+    borderColor: "#FDB913",
+    borderWidth: 3,
   },
   statControls: {
     flexDirection: "row",
@@ -302,7 +303,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   minusButton: {
-    backgroundColor: "#e74c3c",
+    backgroundColor: "#7f8c8d",
     width: 28,
     height: 28,
     borderRadius: 14,
@@ -310,7 +311,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   plusButton: {
-    backgroundColor: "#27ae60",
+    backgroundColor: "#2c3e50",
     width: 28,
     height: 28,
     borderRadius: 14,

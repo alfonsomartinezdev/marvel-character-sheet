@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ecf0f1",
   },
   header: {
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#1A1A1A",
     padding: 20,
     paddingTop: 40,
   },
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     fontStyle: "italic",
-    color: "#2c3e50",
+    color: "#1A1A1A",
     marginBottom: 8,
   },
   heroStats: {
@@ -205,14 +205,14 @@ const styles = StyleSheet.create({
   },
   editButton: {
     flex: 1,
-    backgroundColor: "#3498db",
+    backgroundColor: "#2c3e50",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
   },
   deleteButton: {
     flex: 1,
-    backgroundColor: "#e74c3c",
+    backgroundColor: "#ff3300",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   addButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#2c3e50",
     borderRadius: 8,
     padding: 20,
     alignItems: "center",
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   exportButton: {
     flex: 1,
-    backgroundColor: "#9b59b6",
+    backgroundColor: "#7f8c8d",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   scanButton: {
-    backgroundColor: "#16a085",
+    backgroundColor: "#7f8c8d",
     borderRadius: 8,
     padding: 20,
     alignItems: "center",

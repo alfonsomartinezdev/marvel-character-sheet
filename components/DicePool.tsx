@@ -108,7 +108,7 @@ export const DicePool: React.FC<DicePoolProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#1A1A1A",
     padding: 16,
     borderTopWidth: 2,
     borderTopColor: "#34495e",
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   addButton: {
-    backgroundColor: "#27ae60",
+    backgroundColor: "#7f8c8d",
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 4,
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   clearButton: {
-    backgroundColor: "#e74c3c",
+    backgroundColor: "#95a5a6",
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 4,
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   pickerTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#2c3e50",
+    color: "#1A1A1A",
     marginBottom: 20,
     textAlign: "center",
   },
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   diceOption: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#2c3e50",
     padding: 16,
     borderRadius: 8,
     alignItems: "center",
@@ -216,6 +216,8 @@ const styles = StyleSheet.create({
   },
   diceItem: {
     backgroundColor: "#34495e",
+    borderWidth: 3,
+    borderColor: "#FDB913",
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Text,
   Alert,
+  BackHandler,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Character, DicePoolEntry, DieType } from "./types/Character";
@@ -108,6 +109,23 @@ export default function App() {
 
     loadCustomHeroes();
   }, []);
+
+  // Handle back button/gesture when hero is selected
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        if (selectedHero) {
+          // If a hero is selected, go back to hero selection instead of exiting
+          setSelectedHero(null);
+          return true; // Prevent default behavior (exiting app)
+        }
+        return false; // Allow default behavior (exit app)
+      },
+    );
+
+    return () => backHandler.remove();
+  }, [selectedHero]);
 
   const handleSaveCharacter = (character: Character) => {
     const updatedCustomHeroes = editingHero
@@ -430,7 +448,7 @@ export default function App() {
     if (showCreator) {
       return (
         <SafeAreaView style={styles.container}>
-          <StatusBar barStyle="light-content" backgroundColor="#2c3e50" />
+          <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
           <CharacterCreator
             onSave={handleSaveCharacter}
             onCancel={() => {
@@ -445,7 +463,7 @@ export default function App() {
 
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor="#2c3e50" />
+        <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
         <HeroSelection
           heroes={allHeroes}
           onSelectHero={handleSelectHero}
@@ -477,7 +495,7 @@ export default function App() {
   // Show character sheet for selected hero
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#2c3e50" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A1A1A" />
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
@@ -561,10 +579,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#1A1A1A",
   },
   tabBar: {
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#1A1A1A",
   },
   tabLabel: {
     fontSize: 12,
@@ -572,11 +590,11 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   tabIndicator: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#FDB913",
     height: 3,
   },
   header: {
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#1A1A1A",
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,

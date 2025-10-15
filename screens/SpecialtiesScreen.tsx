@@ -39,7 +39,9 @@ export const SpecialtiesScreen: React.FC<SpecialtiesScreenProps> = ({
             }
           >
             <Text style={styles.specialtyName}>{specialty.name}</Text>
-            <Text style={styles.specialtyDice}>{specialty.dice}</Text>
+            <View style={styles.diceChip}>
+              <Text style={styles.specialtyDice}>{specialty.dice}</Text>
+            </View>
           </TouchableOpacity>
         ))}
       </View>
@@ -61,32 +63,43 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#fff",
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#1A1A1A",
     padding: 12,
     marginHorizontal: -16,
     marginTop: -16,
     marginBottom: 16,
   },
   specialtyItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ecf0f1",
+    backgroundColor: "#f8f9fa",
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+    borderWidth: 3,
+    borderColor: "#bdc3c7",
   },
   specialtyName: {
     fontSize: 16,
-    color: "#2c3e50",
+    fontWeight: "600",
+    color: "#1A1A1A",
+    marginBottom: 8,
   },
   specialtyDice: {
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: "bold",
-    color: "#2c3e50",
+    color: "#1A1A1A",
+  },
+  diceChip: {
+    backgroundColor: "#fff",
+    alignSelf: "flex-start",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "#bdc3c7",
   },
   selectedSpecialty: {
-    backgroundColor: "#d6eaf8",
-    borderLeftWidth: 4,
-    borderLeftColor: "#3498db",
+    backgroundColor: "#fff",
+    borderColor: "#FDB913",
+    borderWidth: 3,
   },
 });

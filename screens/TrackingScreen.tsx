@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#fff",
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#1A1A1A",
     padding: 12,
     marginHorizontal: -16,
     marginTop: -16,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   xpBadge: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#2c3e50",
     color: "#fff",
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   milestoneText: {
     flex: 1,
     fontSize: 14,
-    color: "#2c3e50",
+    color: "#1A1A1A",
     lineHeight: 20,
   },
   stressTrack: {
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   stressLabel: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#2c3e50",
+    color: "#1A1A1A",
     marginBottom: 8,
   },
   stressRow: {
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   stressBox: {
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: "#bdc3c7",
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   },
   stressText: {
     fontSize: 14,
-    color: "#2c3e50",
+    color: "#1A1A1A",
   },
   stressTextActive: {
     color: "#fff",
