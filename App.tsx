@@ -29,6 +29,7 @@ import { QRScannerModal } from "./components/QRScannerModal";
 const Tab = createMaterialTopTabNavigator();
 
 interface HeroState {
+  // Persistent state (saved to AsyncStorage)
   pp: number;
   xp: number;
   stress: {
@@ -36,11 +37,17 @@ interface HeroState {
     mental: { stress: DieType | null; trauma: DieType | null; max: DieType };
     emotional: { stress: DieType | null; trauma: DieType | null; max: DieType };
   };
+}
+
+interface HeroSessionState extends HeroState {
+  // Session state (not saved, resets when switching heroes)
   selectedAffiliation: DicePoolEntry | null;
   selectedDistinction: DicePoolEntry | null;
   selectedSpecialty: DicePoolEntry | null;
   selectedPowers: DicePoolEntry[];
   customDice: DicePoolEntry[];
+  rolledResults: number[] | null;
+  selectedDice: number[];
 }
 
 export default function App() {
@@ -52,6 +59,9 @@ export default function App() {
   const [heroStates, setHeroStates] = useState<Map<string, HeroState>>(
     new Map(),
   );
+  const [sessionStates, setSessionStates] = useState<
+    Map<string, HeroSessionState>
+  >(new Map());
 
   const [showQRExport, setShowQRExport] = useState(false);
   const [showQRScanner, setShowQRScanner] = useState(false);
@@ -239,43 +249,77 @@ export default function App() {
           max: hero.stress.emotional.max,
         },
       },
+    };
+  };
+
+  // Initialize session state (dice pool, etc.)
+  const initializeSessionState = (hero: Character): HeroSessionState => {
+    const persistentState =
+      heroStates.get(hero.name) || initializeHeroState(hero);
+    return {
+      ...persistentState,
       selectedAffiliation: null,
       selectedDistinction: null,
       selectedSpecialty: null,
       selectedPowers: [],
       customDice: [],
+      rolledResults: null,
+      selectedDice: [],
     };
   };
 
   // Get current hero's state
-  const getCurrentHeroState = (): HeroState | null => {
+  const getCurrentHeroState = (): HeroSessionState | null => {
     if (!selectedHero) return null;
     return (
-      heroStates.get(selectedHero.name) || initializeHeroState(selectedHero)
+      sessionStates.get(selectedHero.name) ||
+      initializeSessionState(selectedHero)
     );
   };
 
   // Update current hero's state
-  const updateHeroState = (updates: Partial<HeroState>) => {
+  const updateHeroState = (updates: Partial<HeroSessionState>) => {
     if (!selectedHero) return;
 
     const currentState =
-      getCurrentHeroState() || initializeHeroState(selectedHero);
+      getCurrentHeroState() || initializeSessionState(selectedHero);
     const newState = { ...currentState, ...updates };
 
-    const newHeroStates = new Map(heroStates);
-    newHeroStates.set(selectedHero.name, newState);
-    setHeroStates(newHeroStates);
+    // Update session state
+    const newSessionStates = new Map(sessionStates);
+    newSessionStates.set(selectedHero.name, newState);
+    setSessionStates(newSessionStates);
+
+    // If persistent fields were updated, also update persistent state
+    const persistentFields: (keyof HeroState)[] = ["pp", "xp", "stress"];
+    const hasPersistentUpdates = Object.keys(updates).some((key) =>
+      persistentFields.includes(key as keyof HeroState),
+    );
+
+    if (hasPersistentUpdates) {
+      const newHeroStates = new Map(heroStates);
+      const persistentState: HeroState = {
+        pp: newState.pp,
+        xp: newState.xp,
+        stress: newState.stress,
+      };
+      newHeroStates.set(selectedHero.name, persistentState);
+      setHeroStates(newHeroStates);
+    }
   };
 
   const handleSelectHero = (hero: Character) => {
     setSelectedHero(hero);
-    // Initialize state for this hero if it doesn't exist
+    // Initialize persistent state if it doesn't exist
     if (!heroStates.has(hero.name)) {
       const newHeroStates = new Map(heroStates);
       newHeroStates.set(hero.name, initializeHeroState(hero));
       setHeroStates(newHeroStates);
     }
+    // Always initialize fresh session state when selecting a hero
+    const newSessionStates = new Map(sessionStates);
+    newSessionStates.set(hero.name, initializeSessionState(hero));
+    setSessionStates(newSessionStates);
   };
 
   // All the update functions now use updateHeroState
@@ -378,7 +422,43 @@ export default function App() {
       selectedSpecialty: null,
       selectedPowers: [],
       customDice: [],
+      rolledResults: null,
+      selectedDice: [],
     });
+  };
+
+  const handleRoll = () => {
+    const currentState = getCurrentHeroState();
+    if (!currentState || dicePool.length === 0) return;
+
+    // Roll each die
+    const results = dicePool.map((entry) => {
+      const dieMax = parseInt(entry.dice.substring(1)); // "d8" -> 8
+      return Math.floor(Math.random() * dieMax) + 1;
+    });
+
+    // Calculate pending PP from d4 distinctions
+    const pendingPP = dicePool.filter(
+      (entry) => entry.source.includes("(d4)") && entry.dice === "d4",
+    ).length;
+
+    // Apply pending PP and store results
+    updateHeroState({
+      rolledResults: results,
+      pp: currentState.pp + pendingPP,
+      selectedDice: [],
+    });
+  };
+
+  const handleToggleSelectDie = (index: number) => {
+    const currentState = getCurrentHeroState();
+    if (!currentState) return;
+
+    const newSelected = currentState.selectedDice.includes(index)
+      ? currentState.selectedDice.filter((i) => i !== index)
+      : [...currentState.selectedDice, index];
+
+    updateHeroState({ selectedDice: newSelected });
   };
 
   const updatePP = (amount: number) => {
@@ -571,6 +651,11 @@ export default function App() {
         onRemoveDice={removeDice}
         onClearPool={clearPool}
         onAddCustomDice={addCustomDice}
+        currentPP={currentState?.pp || 0}
+        onRoll={handleRoll}
+        rolledResults={currentState?.rolledResults || null}
+        selectedDice={currentState?.selectedDice || []}
+        onToggleSelectDie={handleToggleSelectDie}
       />
     </SafeAreaView>
   );

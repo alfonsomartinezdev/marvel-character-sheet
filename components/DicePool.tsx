@@ -14,6 +14,11 @@ interface DicePoolProps {
   onRemoveDice: (entry: DicePoolEntry) => void;
   onClearPool: () => void;
   onAddCustomDice: (dice: DieType) => void;
+  currentPP: number;
+  onRoll: () => void;
+  rolledResults: number[] | null;
+  selectedDice: number[];
+  onToggleSelectDie: (index: number) => void;
 }
 
 export const DicePool: React.FC<DicePoolProps> = ({
@@ -21,9 +26,26 @@ export const DicePool: React.FC<DicePoolProps> = ({
   onRemoveDice,
   onClearPool,
   onAddCustomDice,
+  currentPP,
+  onRoll,
+  rolledResults,
+  selectedDice,
+  onToggleSelectDie,
 }) => {
   const [showPicker, setShowPicker] = useState(false);
   const diceTypes: DieType[] = ["d4", "d6", "d8", "d10", "d12"];
+
+  // Calculate pending PP from d4 distinctions
+  const pendingPP = dicePool.filter(
+    (entry) => entry.source.includes("(d4)") && entry.dice === "d4",
+  ).length;
+
+  const isRolled = rolledResults !== null;
+
+  // Calculate total of selected dice
+  const selectedTotal = rolledResults
+    ? selectedDice.reduce((sum, index) => sum + (rolledResults[index] || 0), 0)
+    : 0;
 
   const handleAddDice = (dice: DieType) => {
     onAddCustomDice(dice);
@@ -33,17 +55,33 @@ export const DicePool: React.FC<DicePoolProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Dice Pool ({dicePool.length})</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>Dice Pool ({dicePool.length})</Text>
+          {pendingPP > 0 && !isRolled && (
+            <Text style={styles.ppTracker}>
+              PP: {currentPP} (+{pendingPP})
+            </Text>
+          )}
+          {isRolled && selectedDice.length > 0 && (
+            <Text style={styles.totalTracker}>Total: {selectedTotal}</Text>
+          )}
+        </View>
         <View style={styles.headerButtons}>
           <TouchableOpacity
             onPress={() => setShowPicker(true)}
             style={styles.addButton}
+            disabled={isRolled}
           >
             <Text style={styles.addButtonText}>+ Add</Text>
           </TouchableOpacity>
           {dicePool.length > 0 && (
-            <TouchableOpacity onPress={onClearPool} style={styles.clearButton}>
-              <Text style={styles.clearText}>Clear</Text>
+            <TouchableOpacity
+              onPress={isRolled ? onClearPool : onRoll}
+              style={isRolled ? styles.clearButton : styles.rollButton}
+            >
+              <Text style={styles.clearText}>
+                {isRolled ? "Clear" : "Roll"}
+              </Text>
             </TouchableOpacity>
           )}
         </View>
@@ -55,16 +93,38 @@ export const DicePool: React.FC<DicePoolProps> = ({
         </Text>
       ) : (
         <View style={styles.diceGrid}>
-          {dicePool.map((entry, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.diceItem}
-              onPress={() => onRemoveDice(entry)}
-            >
-              <Text style={styles.diceValue}>{entry.dice}</Text>
-              <Text style={styles.diceSource}>{entry.source}</Text>
-            </TouchableOpacity>
-          ))}
+          {dicePool.map((entry, index) => {
+            const result = rolledResults ? rolledResults[index] : null;
+            const isOne = result === 1;
+            const isSelected = selectedDice.includes(index);
+
+            return (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.diceItem,
+                  isRolled && styles.diceItemRolled,
+                  isOne && styles.diceItemOpportunity,
+                  isSelected && styles.diceItemSelected,
+                ]}
+                onPress={() =>
+                  isRolled ? onToggleSelectDie(index) : onRemoveDice(entry)
+                }
+              >
+                {result !== null ? (
+                  <>
+                    <Text style={styles.diceResult}>{result}</Text>
+                    <Text style={styles.diceValue}>({entry.dice})</Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.diceValue}>{entry.dice}</Text>
+                    <Text style={styles.diceSource}>{entry.source}</Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </View>
       )}
 
@@ -119,9 +179,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12,
   },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
   title: {
     color: "#ecf0f1",
     fontSize: 18,
+    fontWeight: "bold",
+  },
+  ppTracker: {
+    color: "#FDB913",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  totalTracker: {
+    color: "#27ae60",
+    fontSize: 16,
     fontWeight: "bold",
   },
   headerButtons: {
@@ -137,6 +212,12 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: "#fff",
     fontWeight: "600",
+  },
+  rollButton: {
+    backgroundColor: "#27ae60",
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 4,
   },
   clearButton: {
     backgroundColor: "#95a5a6",
@@ -156,6 +237,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 4,
+  },
+  diceResult: {
+    color: "#FDB913",
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 2,
   },
   diceSource: {
     color: "#95a5a6",
@@ -223,5 +310,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     minWidth: 70,
+  },
+  diceItemRolled: {
+    borderColor: "#7f8c8d",
+  },
+  diceItemSelected: {
+    borderColor: "#27ae60",
+    borderWidth: 4,
+  },
+  diceItemOpportunity: {
+    borderColor: "#e74c3c",
+    borderWidth: 4,
   },
 });
